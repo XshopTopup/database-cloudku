@@ -8,7 +8,7 @@
         </div>
         
         <div class="flex items-center gap-3 md:gap-6">
-            <a href="#docs" class="hidden md:block text-sm font-semibold hover:text-brand-neon">API Docs</a>
+            <a href="#docs" class="hidden md:block text-sm font-semibold hover:text-brand-neon transition">API Docs</a>
             <div class="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
                 <span class="text-xs font-bold text-brand-neon" id="displayUsername">User</span>
                 <button onclick="logout()" class="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-md hover:bg-red-500/40 transition">Exit</button>
@@ -18,14 +18,13 @@
 </nav>
 
 <main class="max-w-7xl mx-auto px-4 py-8">
-    
     <div class="flex flex-col lg:grid lg:grid-cols-12 gap-6">
         
         <div class="lg:col-span-4 space-y-6 order-1">
             <div class="glass p-6 rounded-[2rem] shadow-xl">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-white font-bold text-sm flex items-center gap-2">
-                        <i class="fas fa-key text-brand-neon"></i> API ACCESS
+                    <h3 class="text-white font-bold text-sm flex items-center gap-2 uppercase tracking-tighter">
+                        <i class="fas fa-key text-brand-neon"></i> API Access
                     </h3>
                 </div>
                 <div class="relative bg-black/40 rounded-2xl p-4 border border-white/5">
@@ -39,12 +38,13 @@
             </div>
 
             <div class="glass p-6 rounded-[2rem]">
-                <h3 class="text-white font-bold text-sm mb-4 uppercase tracking-widest">New Database</h3>
+                <h3 class="text-white font-bold text-sm mb-4 uppercase tracking-widest">Create Backup Folder</h3>
                 <div class="flex flex-col gap-3">
-                    <input type="text" id="newDbName" placeholder="Database Name..." 
+                    <input type="text" id="newDbName" placeholder="Folder/Project Name..." 
                         class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-brand-neon transition text-sm text-white">
-                    <button onclick="initDb()" id="btnInit" class="w-full bg-brand-neon hover:brightness-110 text-dark-bg font-black py-4 rounded-2xl transition-all shadow-lg shadow-brand-neon/20 uppercase text-xs">
-                        Create Now
+                    <p class="text-[9px] text-slate-500 px-1 italic">*Membuat repositori mandiri di GitHub</p>
+                    <button onclick="initFolder()" id="btnInit" class="w-full bg-brand-neon hover:brightness-110 text-dark-bg font-black py-4 rounded-2xl transition-all shadow-lg shadow-brand-neon/20 uppercase text-xs">
+                        Create Folder
                     </button>
                 </div>
             </div>
@@ -53,7 +53,7 @@
         <div class="lg:col-span-8 order-2">
             <div class="glass p-6 md:p-8 rounded-[2rem] min-h-[400px]">
                 <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-xl font-bold text-white tracking-tight">Active Databases</h2>
+                    <h2 class="text-xl font-bold text-white tracking-tight">Active Repositories</h2>
                     <button onclick="loadRepos()" class="bg-white/5 p-3 rounded-xl hover:text-brand-neon transition">
                         <i class="fas fa-sync-alt" id="refreshIcon"></i>
                     </button>
@@ -73,59 +73,39 @@
         <div class="glass p-6 md:p-10 rounded-[2.5rem] border-t-4 border-t-brand-neon">
             <div class="mb-8">
                 <h2 class="text-2xl font-bold text-white italic">Developer <span class="text-brand-neon">API Reference</span></h2>
-                <p class="text-sm text-slate-500 mt-1">Gunakan header <code class="text-brand-neon">x-api-key</code> untuk autentikasi.</p>
+                <p class="text-sm text-slate-500 mt-1">Gunakan header <code class="text-brand-neon">x-api-key</code> untuk autentikasi setiap request.</p>
             </div>
             
-            <div class="space-y-8">
-                <div class="bg-black/40 rounded-3xl p-6 border border-white/5">
-                    <div class="flex items-center justify-between flex-wrap gap-2 mb-4">
-                        <div class="flex items-center gap-3">
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-black/40 rounded-3xl p-6 border border-white/5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
                             <span class="text-[10px] font-black bg-brand-neon text-dark-bg px-2 py-1 rounded">POST</span>
                             <code class="text-xs text-white font-mono">/api/db/save</code>
                         </div>
-                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Cloud Database</span>
+                        <p class="text-xs text-slate-400 mb-4 leading-relaxed">Simpan data ke <strong>Public Repository</strong> bersama. Cocok untuk database JSON global.</p>
                     </div>
-                    <p class="text-xs text-slate-400 mb-4 leading-relaxed">Simpan atau update file JSON ke database cloud publik.</p>
-                    <pre class="text-[11px] text-brand-neon/80 overflow-x-auto bg-slate-900/50 p-4 rounded-xl border border-white/5 leading-relaxed">
+                    <pre class="text-[10px] text-brand-neon/80 overflow-x-auto bg-slate-900/50 p-4 rounded-xl border border-white/5 font-mono leading-relaxed">
 {
-  "dbName": "app-settings",
-  "fileName": "config.json",
-  "content": "{\"theme\": \"dark\"}"
+  "dbName": "global-data",
+  "fileName": "store.json",
+  "content": "{...}"
 }</pre>
-                    <div class="mt-3 text-[10px] text-slate-500 italic">
-                        <i class="fas fa-link mr-1"></i> Access via: /db/{shareCode}/{fileName}
-                    </div>
                 </div>
 
-                <div class="bg-black/40 rounded-3xl p-6 border border-white/5">
-                    <div class="flex items-center justify-between flex-wrap gap-2 mb-4">
-                        <div class="flex items-center gap-3">
+                <div class="bg-black/40 rounded-3xl p-6 border border-white/5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
                             <span class="text-[10px] font-black bg-brand-teal text-white px-2 py-1 rounded">POST</span>
-                            <code class="text-xs text-white font-mono">/api/folder</code>
-                        </div>
-                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Init Backup Repo</span>
-                    </div>
-                    <p class="text-xs text-slate-400 mb-4 leading-relaxed">Inisialisasi repositori baru khusus untuk backup file.</p>
-                    <pre class="text-[11px] text-brand-teal/80 overflow-x-auto bg-slate-900/50 p-4 rounded-xl border border-white/5 leading-relaxed">
-{
-  "folderName": "My-Source-Code"
-}</pre>
-                </div>
-
-                <div class="bg-black/40 rounded-3xl p-6 border border-white/5">
-                    <div class="flex items-center justify-between flex-wrap gap-2 mb-4">
-                        <div class="flex items-center gap-3">
-                            <span class="text-[10px] font-black bg-brand-neon text-dark-bg px-2 py-1 rounded">POST</span>
                             <code class="text-xs text-white font-mono">/api/backup/upload</code>
                         </div>
-                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Standard Backup</span>
+                        <p class="text-xs text-slate-400 mb-4 leading-relaxed">Upload file ke <strong>Dedicated Repository</strong> folder Anda sendiri. Privasi lebih terjaga.</p>
                     </div>
-                    <p class="text-xs text-slate-400 mb-4 leading-relaxed">Upload file ke repositori backup yang sudah dibuat.</p>
-                    <pre class="text-[11px] text-brand-neon/80 overflow-x-auto bg-slate-900/50 p-4 rounded-xl border border-white/5 leading-relaxed">
+                    <pre class="text-[10px] text-brand-teal/80 overflow-x-auto bg-slate-900/50 p-4 rounded-xl border border-white/5 font-mono leading-relaxed">
 {
-  "folderName": "My-Source-Code",
-  "fileName": "backup.zip",
-  "content": "base64_string_or_text"
+  "folderName": "My-Project",
+  "fileName": "backup.js",
+  "content": "..."
 }</pre>
                 </div>
             </div>
@@ -138,7 +118,6 @@
     const username = localStorage.getItem('username') || 'Member';
 
     if (!apiKey) window.location.href = '/login';
-
     document.getElementById('displayUsername').innerText = username;
     document.getElementById('apiKeyInput').value = apiKey;
 
@@ -172,7 +151,7 @@
                 listContainer.innerHTML = `
                     <div class="flex flex-col items-center justify-center py-20 opacity-20">
                         <i class="fas fa-folder-open text-5xl mb-4"></i>
-                        <p class="text-xs font-bold uppercase tracking-widest text-center">No Database Found<br><span class="text-[10px] font-normal lowercase">create one to get started</span></p>
+                        <p class="text-xs font-bold uppercase tracking-widest text-center">No Folders Found</p>
                     </div>`;
                 return;
             }
@@ -181,55 +160,61 @@
                 <div class="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-brand-neon/30 transition-all group">
                     <div class="flex items-center gap-4 truncate">
                         <div class="bg-brand-neon/10 p-3 rounded-xl text-brand-neon min-w-[45px] text-center">
-                            <i class="fas fa-database text-sm"></i>
+                            <i class="fas fa-folder text-sm"></i>
                         </div>
                         <div class="truncate">
                             <h4 class="text-white font-bold text-sm truncate">${f.folderName}</h4>
-                            <p class="text-[9px] text-slate-500 font-mono truncate uppercase">${f.shareCode}</p>
+                            <p class="text-[9px] text-slate-500 font-mono truncate uppercase tracking-tighter">${f.repoName}</p>
                         </div>
                     </div>
-                    <button onclick="copyLink('${f.shareCode}')" class="p-2 text-slate-500 hover:text-brand-neon transition">
-                        <i class="fas fa-link text-xs"></i>
-                    </button>
+                    <div class="flex gap-2">
+                        <button onclick="copyLink('${f.shareCode}')" class="p-2 text-slate-500 hover:text-brand-neon transition" title="Copy Link">
+                            <i class="fas fa-link text-xs"></i>
+                        </button>
+                    </div>
                 </div>
             `).join('');
         } catch (e) {
-            listContainer.innerHTML = `<p class="text-center text-red-400 font-bold py-10 text-xs">FETCH ERROR</p>`;
+            listContainer.innerHTML = `<p class="text-center text-red-400 font-bold py-10 text-xs uppercase tracking-widest">Connection Error</p>`;
         } finally {
             setTimeout(() => icon.classList.remove('animate-spin'), 500);
         }
     }
 
-    function copyLink(code) {
-        const url = window.location.origin + '/db/' + code + '/data.json';
-        navigator.clipboard.writeText(url);
-        alert('URL Database Copied!');
-    }
-
-    async function initDb() {
+    async function initFolder() {
         const name = document.getElementById('newDbName').value;
         const btn = document.getElementById('btnInit');
-        if(!name) return;
+        if(!name) return alert('Enter folder name');
 
         btn.disabled = true;
-        btn.innerText = 'WAIT...';
+        btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i>';
 
         try {
-            await fetch('/api/db/save', {
+            const res = await fetch('/api/folder', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
-                body: JSON.stringify({ 
-                    dbName: name, 
-                    fileName: 'init.json', 
-                    content: '{"status":"active"}' 
-                })
+                body: JSON.stringify({ folderName: name })
             });
-            document.getElementById('newDbName').value = '';
-            loadRepos();
+            const data = await res.json();
+            
+            if(res.ok) {
+                document.getElementById('newDbName').value = '';
+                loadRepos();
+            } else {
+                alert(data.error || 'Error creating folder');
+            }
+        } catch (e) {
+            alert('Server Error');
         } finally {
             btn.disabled = false;
-            btn.innerText = 'CREATE NOW';
+            btn.innerText = 'CREATE FOLDER';
         }
+    }
+
+    function copyLink(code) {
+        const url = window.location.origin + '/s/' + code + '/backup.json';
+        navigator.clipboard.writeText(url);
+        alert('Base URL Copied!');
     }
 
     loadRepos();
