@@ -19,6 +19,7 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('[Arsyilla] MongoDB Connected'))
     .catch(err => console.error('[Arsyilla] MongoDB Error:', err));
 
+// --- MODELS ---
 const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -27,10 +28,10 @@ const UserSchema = new mongoose.Schema({
 
 const FolderSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    folderName: String,
-    repoName: String,
+    folderName: String, 
+    repoName: String,   // Nama fisik unik di GitHub
     shareCode: { type: String, unique: true },
-    dbPath: String
+    dbPath: String      
 });
 
 const User = mongoose.model('User', UserSchema);
@@ -38,15 +39,18 @@ const Folder = mongoose.model('Folder', FolderSchema);
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 const GITHUB_OWNER = process.env.GITHUB_OWNER;
 
+// --- GITHUB HELPER ---
 const ArsyillaGitHub = {
     async createRepo(repoName) {
         try {
             await octokit.repos.createForAuthenticatedUser({
                 name: repoName,
-                auto_init: false
+                auto_init: true
             });
+            return true;
         } catch (error) {
-            if (error.status !== 422) throw error;
+            if (error.status === 422) return false; // Repo sudah ada
+            throw error;
         }
     },
     async uploadFile(repoName, fileName, content) {
@@ -62,7 +66,7 @@ const ArsyillaGitHub = {
             owner: GITHUB_OWNER,
             repo: repoName,
             path: fileName,
-            message: `Arsyilla System Update`,
+            message: `Backup Update by Arsyilla AI`,
             content: Buffer.from(content).toString("base64"),
             sha: sha
         });
@@ -89,6 +93,7 @@ const authenticateKey = async (req, res, next) => {
     next();
 };
 
+// --- ROUTES ---
 app.get('/', (req, res) => res.render('index'));
 app.get('/login', (req, res) => res.render('login'));
 
@@ -115,6 +120,7 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// 1. CLOUD DATABASE (Shared Public Repo)
 app.post('/api/db/save', authenticateKey, async (req, res) => {
     try {
         const { dbName, fileName, content } = req.body;
@@ -141,40 +147,68 @@ app.post('/api/db/save', authenticateKey, async (req, res) => {
         const targetFile = `${folder.dbPath}/${fileName}`;
         await ArsyillaGitHub.uploadFile(repoDB, targetFile, content);
 
-        res.json({
-            success: true,
-            message: "Database Updated",
-            url: `/db/${folder.shareCode}/${fileName}`
+        res.json({ success: true, url: `/db/${folder.shareCode}/${fileName}` });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// 2. CREATE FOLDER = NEW DEDICATED REPOSITORY
+app.post('/api/folder', authenticateKey, async (req, res) => {
+    try {
+        const { folderName } = req.body;
+        
+        // Cek apakah user ini sudah pernah membuat folder dengan nama yang sama
+        const existing = await Folder.findOne({ userId: req.user._id, folderName });
+        if (existing) return res.status(400).json({ error: `Folder ${folderName} sudah dibuat.` });
+
+        // Buat nama repositori fisik unik (tambahkan suffix random untuk menghindari konflik antar user di GitHub)
+        const suffix = crypto.randomBytes(3).toString('hex');
+        const slugRepo = folderName.replace(/\s+/g, '-').toLowerCase() + '-' + suffix;
+        const shareCode = crypto.randomBytes(4).toString('hex');
+
+        // Eksekusi pembuatan repo di GitHub
+        await ArsyillaGitHub.createRepo(slugRepo);
+        
+        const newFolder = new Folder({ 
+            userId: req.user._id, 
+            folderName, 
+            repoName: slugRepo, 
+            shareCode, 
+            dbPath: '' 
+        });
+        await newFolder.save();
+
+        res.json({ message: "Repo Backup Berhasil Dibuat", shareCode, repoName: slugRepo });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// 3. UPLOAD BACKUP TO DEDICATED REPO
+app.post('/api/backup/upload', authenticateKey, async (req, res) => {
+    try {
+        const { folderName, fileName, content } = req.body;
+        
+        // Pastikan mencari folder milik user yang sedang login
+        const folder = await Folder.findOne({ userId: req.user._id, folderName });
+        
+        if (!folder) return res.status(404).json({ error: "Folder tidak ditemukan. Harap buat via /api/folder." });
+
+        // Kirim ke repoName unik yang sudah disimpan di database
+        await ArsyillaGitHub.uploadFile(folder.repoName, fileName, content);
+        
+        res.json({ 
+            success: true, 
+            message: `Backup sukses ke repo: ${folder.repoName}`,
+            url: `/s/${folder.shareCode}/${fileName}` 
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-app.get('/db/:shareCode/:fileName', async (req, res) => {
-    const { shareCode, fileName } = req.params;
-    const folder = await Folder.findOne({ shareCode });
-    if (!folder) return res.status(404).send("DB tidak ditemukan.");
-    
-    res.redirect(`https://raw.githubusercontent.com/${GITHUB_OWNER}/${folder.repoName}/main/${folder.dbPath}/${fileName}`);
-});
-
-app.post('/api/folder', authenticateKey, async (req, res) => {
-    try {
-        const { folderName } = req.body;
-        const slugRepo = folderName.replace(/\s+/g, '-').toLowerCase();
-        const shareCode = crypto.randomBytes(4).toString('hex');
-
-        await ArsyillaGitHub.createRepo(slugRepo);
-        const newFolder = new Folder({ userId: req.user._id, folderName, repoName: slugRepo, shareCode, dbPath: '' });
-        await newFolder.save();
-
-        res.json({ message: "Repo Backup Berhasil Dibuat", shareCode });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
+// 4. LIST ALL USER REPOS/FOLDERS
 app.get('/api/my-folders', authenticateKey, async (req, res) => {
     try {
         const folders = await Folder.find({ userId: req.user._id });
@@ -184,17 +218,12 @@ app.get('/api/my-folders', authenticateKey, async (req, res) => {
     }
 });
 
-app.post('/api/backup/upload', authenticateKey, async (req, res) => {
-    try {
-        const { folderName, fileName, content } = req.body;
-        const folder = await Folder.findOne({ userId: req.user._id, folderName });
-        if (!folder) return res.status(404).json({ error: "Repo tidak ditemukan." });
-
-        await ArsyillaGitHub.uploadFile(folder.repoName, fileName, content);
-        res.json({ success: true, url: `/s/${folder.shareCode}/${fileName}` });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+// 5. VIEW HANDLERS (REDIRECT TO GITHUB RAW)
+app.get('/db/:shareCode/:fileName', async (req, res) => {
+    const { shareCode, fileName } = req.params;
+    const folder = await Folder.findOne({ shareCode });
+    if (!folder) return res.status(404).send("DB tidak ditemukan.");
+    res.redirect(`https://raw.githubusercontent.com/${GITHUB_OWNER}/${folder.repoName}/main/${folder.dbPath}/${fileName}`);
 });
 
 app.get('/s/:shareCode/:fileName', async (req, res) => {
