@@ -1,17 +1,25 @@
-<nav class="w-full bg-[#0B1120] px-4 py-4 flex justify-between items-center border-b border-white/5 sticky top-0 z-50">
-    <div class="flex items-center gap-2">
-        <div class="bg-[#14B8A6] p-1.5 rounded-lg">
-            <i class="fas fa-cloud text-white text-sm"></i>
+<nav class="w-full bg-[#0B1120] border-b border-white/5 px-4 py-4 sticky top-0 z-50">
+    <div class="max-w-xl mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="bg-[#14B8A6] p-1.5 rounded-lg">
+                <i class="fas fa-cloud text-white text-xs"></i>
+            </div>
+            <div class="flex flex-col md:flex-row md:items-baseline">
+                <span class="text-white font-bold text-base tracking-tight">Cloud<span class="text-[#14B8A6]">Ku</span></span>
+                <span class="text-[9px] text-slate-500 font-medium uppercase tracking-widest md:ml-2">Dashboard</span>
+            </div>
         </div>
-        <span class="text-white font-bold text-lg tracking-tight">Cloud<span class="text-[#14B8A6]">Ku</span><span class="text-[10px] font-medium text-slate-500 ml-2 uppercase tracking-widest">Dashboard</span></span>
-    </div>
-    <div class="flex items-center gap-4">
-        <a href="#docs" class="text-[11px] font-bold text-slate-400 hover:text-white uppercase tracking-wider">API Docs</a>
-        <button onclick="logout()" class="text-[11px] font-bold text-red-400 hover:text-red-300 uppercase tracking-wider">Logout</button>
-        <div class="flex items-center gap-2 bg-[#1E293B] pl-3 pr-1 py-1 rounded-full border border-white/10">
-            <span class="text-xs font-semibold text-[#14B8A6]" id="displayUsername">User</span>
-            <div class="w-7 h-7 bg-[#14B8A6]/20 rounded-full flex items-center justify-center">
-                <i class="fas fa-user text-[#14B8A6] text-[10px]"></i>
+        
+        <div class="flex items-center gap-4">
+            <div class="hidden xs:flex items-center gap-3 mr-2">
+                <a href="#docs" class="text-[10px] font-bold text-slate-400 hover:text-white uppercase tracking-wider transition">API Docs</a>
+                <button onclick="logout()" class="text-[10px] font-bold text-red-500 hover:text-red-400 uppercase tracking-wider transition">Logout</button>
+            </div>
+            <div class="flex items-center gap-2 bg-[#1E293B] pl-3 pr-1 py-1 rounded-full border border-white/10">
+                <span class="text-[11px] font-bold text-[#14B8A6]" id="displayUsername">User</span>
+                <div class="w-6 h-6 bg-[#14B8A6]/20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user text-[#14B8A6] text-[10px]"></i>
+                </div>
             </div>
         </div>
     </div>
@@ -62,65 +70,45 @@
         </div>
     </div>
 
-    <section id="docs" class="pt-10 space-y-8">
+    <section id="docs" class="pt-10 space-y-8 pb-20">
         <h2 class="text-white font-bold text-lg flex items-center gap-3 px-2">
-            <i class="fas fa-book text-[#14B8A6]"></i> Documentation
+            <i class="fas fa-book text-[#14B8A6]"></i> Developer API
         </h2>
 
-        <div class="bg-[#111827] rounded-[2rem] p-8 border border-white/5 shadow-2xl">
+        <div class="bg-[#111827] rounded-[2rem] p-8 border border-white/5">
             <div class="flex items-center gap-3 mb-6">
-                <span class="bg-[#14B8A6] text-[#0B1120] text-[10px] font-black px-2 py-1 rounded">POST</span>
-                <h3 class="text-white font-bold text-sm tracking-tight">/api/folder</h3>
-            </div>
-            <p class="text-xs text-slate-400 mb-6">Membuat folder baru yang berfungsi sebagai repositori mandiri milik user.</p>
-            <div class="space-y-4">
-                <p class="text-[10px] font-bold text-[#14B8A6] uppercase tracking-widest">Request Body:</p>
-                <div class="bg-[#070B14] p-5 rounded-2xl border border-white/5 font-mono text-[11px] text-white/70">
-                    {"folderName": "Backup123"}
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-[#111827] rounded-[2rem] p-8 border border-white/5 shadow-2xl">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="bg-[#14B8A6] text-[#0B1120] text-[10px] font-black px-2 py-1 rounded">POST</span>
+                <span class="bg-[#14B8A6] text-[#0B1120] text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
                 <h3 class="text-white font-bold text-sm tracking-tight">/api/db/save</h3>
+                <span class="text-[9px] text-slate-500 font-bold uppercase ml-auto">Cloud Database</span>
             </div>
-            <p class="text-xs text-slate-400 mb-6">Menyimpan atau memperbarui data JSON ke repositori publik bersama.</p>
-            <div class="space-y-6">
-                <div>
-                    <p class="text-[10px] font-bold text-[#14B8A6] uppercase tracking-widest mb-3">Request Body:</p>
-                    <div class="bg-[#070B14] p-5 rounded-2xl border border-white/5 font-mono text-[11px] text-white/70">
-                        {"dbName": "config", "fileName": "data.json", "content": "..."}
-                    </div>
+            <p class="text-xs text-slate-400 mb-8">Simpan data JSON ke repositori publik bersama.</p>
+            <div class="space-y-4">
+                <label class="text-[9px] font-bold text-[#14B8A6] uppercase tracking-widest">Request Body:</label>
+                <div class="bg-[#070B14] p-5 rounded-2xl border border-white/5 font-mono text-[10px] text-white/60">
+                    {"dbName": "my-app", "fileName": "user.json", "content": "..."}
                 </div>
-                <div>
-                    <p class="text-[10px] font-bold text-[#14B8A6] uppercase tracking-widest mb-3">Access URL:</p>
-                    <div class="bg-[#070B14] p-5 rounded-2xl border border-white/5 font-mono text-[11px] text-white/70 italic">
-                        GET /db/{shareCode}/{fileName}
-                    </div>
+                <label class="text-[9px] font-bold text-[#14B8A6] uppercase tracking-widest block mt-4">Access URL:</label>
+                <div class="bg-[#070B14] p-5 rounded-2xl border border-white/5 font-mono text-[10px] text-white/60 italic">
+                    GET /db/{shareCode}/{fileName}
                 </div>
             </div>
         </div>
 
-        <div class="bg-[#111827] rounded-[2rem] p-8 border border-white/5 shadow-2xl">
+        <div class="bg-[#111827] rounded-[2rem] p-8 border border-white/5">
             <div class="flex items-center gap-3 mb-6">
-                <span class="bg-[#14B8A6] text-[#0B1120] text-[10px] font-black px-2 py-1 rounded">POST</span>
+                <span class="bg-[#14B8A6] text-[#0B1120] text-[10px] font-black px-2 py-1 rounded uppercase">POST</span>
                 <h3 class="text-white font-bold text-sm tracking-tight">/api/backup/upload</h3>
+                <span class="text-[9px] text-slate-500 font-bold uppercase ml-auto">Standard Backup</span>
             </div>
-            <p class="text-xs text-slate-400 mb-6">Upload file ke repositori mandiri yang sudah dibuat melalui endpoint /api/folder.</p>
-            <div class="space-y-6">
-                <div>
-                    <p class="text-[10px] font-bold text-[#14B8A6] uppercase tracking-widest mb-3">Request Body:</p>
-                    <div class="bg-[#070B14] p-5 rounded-2xl border border-white/5 font-mono text-[11px] text-white/70">
-                        {"folderName": "Backup123", "fileName": "v1.zip", "content": "..."}
-                    </div>
+            <p class="text-xs text-slate-400 mb-8">Upload file ke folder mandiri Anda sendiri.</p>
+            <div class="space-y-4">
+                <label class="text-[9px] font-bold text-[#14B8A6] uppercase tracking-widest">Request Body:</label>
+                <div class="bg-[#070B14] p-5 rounded-2xl border border-white/5 font-mono text-[10px] text-white/60">
+                    {"folderName": "Project-X", "fileName": "backup.zip", "content": "..."}
                 </div>
-                <div>
-                    <p class="text-[10px] font-bold text-[#14B8A6] uppercase tracking-widest mb-3">Access URL:</p>
-                    <div class="bg-[#070B14] p-5 rounded-2xl border border-white/5 font-mono text-[11px] text-white/70 italic">
-                        GET /s/{shareCode}/{fileName}
-                    </div>
+                <label class="text-[9px] font-bold text-[#14B8A6] uppercase tracking-widest block mt-4">Access URL:</label>
+                <div class="bg-[#070B14] p-5 rounded-2xl border border-white/5 font-mono text-[10px] text-white/60 italic">
+                    GET /s/{shareCode}/{fileName}
                 </div>
             </div>
         </div>
@@ -137,7 +125,7 @@
 
     function logout() { localStorage.clear(); window.location.href = '/login'; }
     function toggleKey() { const i = document.getElementById('apiKeyInput'); i.type = i.type === 'password' ? 'text' : 'password'; }
-    function copyKey() { navigator.clipboard.writeText(document.getElementById('apiKeyInput').value); alert('Copied!'); }
+    function copyKey() { navigator.clipboard.writeText(document.getElementById('apiKeyInput').value); alert('API Key Copied!'); }
 
     async function loadRepos() {
         const listContainer = document.getElementById('repoList');
@@ -156,7 +144,7 @@
                         <div class="bg-[#14B8A6]/10 p-4 rounded-xl text-[#14B8A6]"><i class="fas fa-folder"></i></div>
                         <div>
                             <h4 class="text-white font-bold text-sm tracking-tight">${f.folderName}</h4>
-                            <p class="text-[9px] text-slate-500 font-mono uppercase tracking-widest mt-1">${f.repoName}</p>
+                            <p class="text-[9px] text-slate-500 font-mono uppercase mt-1 tracking-tighter">${f.repoName}</p>
                         </div>
                     </div>
                     <button onclick="copyShareLink('${f.shareCode}', '${f.dbPath ? 'db' : 's'}')" class="text-slate-500 group-hover:text-[#14B8A6] transition">
@@ -164,6 +152,8 @@
                     </button>
                 </div>
             `).join('');
+        } catch (e) {
+            listContainer.innerHTML = `<p class="text-center text-red-400 py-10 text-[10px] font-bold uppercase">Connection Error</p>`;
         } finally { setTimeout(() => icon.classList.remove('animate-spin'), 500); }
     }
 
@@ -179,7 +169,6 @@
                 body: JSON.stringify({ folderName: name })
             });
             if(res.ok) { document.getElementById('newFolderName').value = ''; loadRepos(); }
-            else { const d = await res.json(); alert(d.error); }
         } finally { btn.disabled = false; btn.innerText = 'CREATE DATABASE'; }
     }
 
