@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CloudKu - Arsyilla AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,16 +13,18 @@
                 extend: {
                     fontFamily: { sans: ['Quicksand', 'sans-serif'] },
                     colors: {
-                        dark: { bg: '#0f172a', card: '#1e293b', border: '#334155' },
-                        brand: { teal: '#14b8a6', neon: '#2dd4bf', hover: '#0f766e' }
+                        dark: { bg: '#0b0f1a', card: '#161b2c', border: '#252d44' },
+                        brand: { teal: '#14b8a6', neon: '#2dd4bf' }
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #0f172a; background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1.5px, transparent 1.5px); background-size: 24px 24px; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
+        body { background: #0b0f1a; min-height: 100vh; overflow-x: hidden; }
+        .glass { background: rgba(22, 27, 44, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.05); }
+        /* Mengatasi teks yang terpotong di mobile */
+        .truncate-custom { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     </style>
 </head>
 <body class="text-slate-300">
