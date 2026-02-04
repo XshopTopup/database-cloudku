@@ -1,0 +1,237 @@
+<nav class="w-full glass sticky top-0 z-50 px-6 py-4 mb-10">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <i class="fas fa-cloud text-brand-neon text-2xl"></i>
+            <span class="text-xl font-bold text-white tracking-tight">Cloud<span class="text-brand-neon">Ku</span></span>
+        </div>
+        <div class="flex items-center gap-6 text-sm font-semibold">
+            <a href="#dashboard" class="hover:text-brand-neon transition">Dashboard</a>
+            <a href="#docs" class="hover:text-brand-neon transition">API Docs</a>
+            <button onclick="logout()" class="text-red-400 hover:text-red-300 transition">Logout</button>
+            <div class="flex items-center gap-2 bg-brand-neon/10 px-3 py-1 rounded-full border border-brand-neon/20">
+                <span class="text-brand-neon" id="displayUsername">Guest</span>
+                <i class="fas fa-circle-user text-brand-neon"></i>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-7xl mx-auto px-6">
+    
+    <section id="dashboard" class="mb-16 scroll-mt-24">
+        <div class="grid lg:grid-cols-3 gap-8">
+            
+            <div class="space-y-6">
+                <div class="glass p-6 rounded-3xl shadow-xl">
+                    <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+                        <i class="fas fa-key text-brand-neon"></i> API Key Access
+                    </h3>
+                    <div class="relative">
+                        <input type="password" id="apiKeyInput" value="" readonly 
+                            class="w-full bg-black/40 border border-dark-border p-4 rounded-2xl text-brand-neon font-mono text-xs focus:outline-none">
+                        <div class="absolute right-3 top-3.5 flex gap-2">
+                            <button onclick="toggleKey()" class="p-1 text-slate-500 hover:text-white transition"><i class="fas fa-eye"></i></button>
+                            <button onclick="copyKey()" class="p-1 text-slate-500 hover:text-white transition"><i class="fas fa-copy"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass p-6 rounded-3xl">
+                    <h3 class="text-white font-bold mb-4 text-sm uppercase tracking-widest">New Database</h3>
+                    <div class="space-y-4">
+                        <input type="text" id="newDbName" placeholder="Database Name..." 
+                            class="w-full bg-black/20 border border-dark-border p-3 rounded-xl outline-none focus:border-brand-neon transition text-sm">
+                        <button onclick="initDb()" id="btnInit" class="w-full bg-brand-neon hover:bg-brand-teal text-dark-bg font-black py-3 rounded-xl transition uppercase text-xs">
+                            Create Database
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div class="glass p-8 rounded-3xl min-h-[450px]">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-2xl font-bold text-white tracking-tight">My Cloud Databases</h2>
+                        <button onclick="loadRepos()" class="bg-slate-800 p-2.5 rounded-xl hover:text-brand-neon transition">
+                            <i class="fas fa-sync-alt" id="refreshIcon"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="repoList" class="grid gap-4">
+                        <div class="flex flex-col items-center justify-center py-20 opacity-30">
+                            <i class="fas fa-spinner animate-spin text-4xl mb-4"></i>
+                            <p class="font-bold tracking-widest text-xs uppercase">Fetching Data...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="docs" class="mt-32 scroll-mt-24">
+        <div class="max-w-3xl mx-auto text-center mb-12">
+            <h2 class="text-4xl font-extrabold text-white mb-4 italic">Cloud<span class="text-brand-neon">API</span></h2>
+            <p class="text-slate-400 leading-relaxed">Gunakan dokumentasi di bawah ini untuk menghubungkan bot atau aplikasi eksternal Anda ke penyimpanan CloudKu.</p>
+        </div>
+
+        <div class="glass p-8 rounded-[40px] space-y-12">
+            <div class="endpoint-card p-8 rounded-3xl bg-slate-900/40">
+                <div class="flex flex-wrap items-center gap-4 mb-6">
+                    <span class="bg-brand-neon text-dark-bg px-4 py-1.5 rounded-lg text-xs font-black italic">POST</span>
+                    <code class="text-white font-bold text-lg">/api/db/save</code>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Description</h4>
+                        <p class="text-sm text-slate-400">Endpoint ini digunakan untuk menginisialisasi database baru atau mengupdate file yang sudah ada. Path akan dikunci menggunakan timestamp saat pembuatan pertama.</p>
+                        
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Required Headers</h4>
+                        <code class="block bg-black/50 p-3 rounded-xl text-brand-neon text-xs font-mono">x-api-key: YOUR_KEY</code>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Request Body (JSON)</h4>
+                        <pre class="bg-black/60 p-5 rounded-2xl font-mono text-[11px] text-brand-neon border border-white/5 overflow-x-auto leading-relaxed">
+{
+  "dbName": "users-store",
+  "fileName": "data.json",
+  "content": "{\"status\": \"active\"}"
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-brand-neon/5 border border-brand-neon/10 p-6 rounded-3xl flex items-center gap-4">
+                <i class="fas fa-lightbulb text-brand-neon text-xl"></i>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    <strong class="text-white">Tips:</strong> Gunakan endpoint <code class="text-brand-neon">/db/{shareCode}/{fileName}</code> untuk mengambil data secara langsung (Raw) tanpa perlu API key di aplikasi frontend Anda.
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="mt-24 pb-12 text-center">
+    <div class="opacity-20 flex justify-center items-center gap-4 mb-4">
+        <div class="h-[1px] w-12 bg-white"></div>
+        <i class="fas fa-cloud text-xs"></i>
+        <div class="h-[1px] w-12 bg-white"></div>
+    </div>
+    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-[0.4em]">
+        &copy; <%= new Date().getFullYear() %> Arsyilla AI & CloudKu Engine
+    </p>
+</footer>
+
+<script>
+    const apiKey = localStorage.getItem('apiKey');
+    const username = localStorage.getItem('username') || 'Member';
+
+    if (!apiKey) window.location.href = '/login';
+
+    document.getElementById('displayUsername').innerText = username;
+    document.getElementById('apiKeyInput').value = apiKey;
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = '/login';
+    }
+
+    function toggleKey() {
+        const input = document.getElementById('apiKeyInput');
+        input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    function copyKey() {
+        const val = document.getElementById('apiKeyInput').value;
+        navigator.clipboard.writeText(val);
+        alert('API Key copied to clipboard!');
+    }
+
+    async function loadRepos() {
+        const listContainer = document.getElementById('repoList');
+        const icon = document.getElementById('refreshIcon');
+        icon.classList.add('animate-spin');
+
+        try {
+            const res = await fetch('/api/my-folders', {
+                headers: { 'x-api-key': apiKey }
+            });
+            const data = await res.json();
+            
+            if (data.folders.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-20 opacity-30">
+                        <i class="fas fa-folder-plus text-4xl mb-4"></i>
+                        <p class="text-xs font-bold uppercase tracking-widest">No Database Found</p>
+                    </div>`;
+                return;
+            }
+
+            listContainer.innerHTML = data.folders.map(f => `
+                <div class="flex items-center justify-between p-5 bg-slate-900/40 border border-white/5 rounded-[24px] hover:border-brand-neon/50 transition-all group shadow-lg">
+                    <div class="flex items-center gap-5">
+                        <div class="bg-brand-neon/10 p-4 rounded-2xl text-brand-neon group-hover:scale-110 transition-transform">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-bold text-lg">${f.folderName}</h4>
+                            <p class="text-[10px] text-slate-500 font-mono tracking-tighter">${f.dbPath || 'standard-repo'}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="copyLink('${f.shareCode}')" class="p-3 bg-slate-800 rounded-xl text-slate-400 hover:text-brand-neon transition" title="Copy Share Code">
+                            <i class="fas fa-link text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        } catch (e) {
+            listContainer.innerHTML = `<p class="text-center text-red-400 font-bold py-10">ERROR FETCHING DATA</p>`;
+        } finally {
+            setTimeout(() => icon.classList.remove('animate-spin'), 500);
+        }
+    }
+
+    function copyLink(code) {
+        const url = window.location.origin + '/db/' + code + '/data.json';
+        navigator.clipboard.writeText(url);
+        alert('Masked URL Copied:\n' + url);
+    }
+
+    async function initDb() {
+        const name = document.getElementById('newDbName').value;
+        const btn = document.getElementById('btnInit');
+        if(!name) return alert('Please enter a database name');
+
+        btn.disabled = true;
+        btn.innerText = 'WAIT...';
+
+        try {
+            const res = await fetch('/api/db/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+                body: JSON.stringify({ 
+                    dbName: name, 
+                    fileName: 'status.json', 
+                    content: '{"status":"ready", "engine":"Arsyilla"}' 
+                })
+            });
+
+            if(res.ok) {
+                loadRepos();
+                document.getElementById('newDbName').value = '';
+            } else {
+                alert('Failed to initialize database');
+            }
+        } catch (e) {
+            alert('Server Error');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'CREATE DATABASE';
+        }
+    }
+
+    // Load data immediately
+    loadRepos();
+</script>

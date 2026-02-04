@@ -1,0 +1,59 @@
+<div class="flex items-center justify-center min-h-screen px-4">
+    <div class="w-full max-w-md glass p-10 rounded-[40px] shadow-2xl">
+        <div class="text-center mb-10">
+            <div class="inline-block p-5 rounded-3xl bg-brand-neon/10 mb-4">
+                <i class="fas fa-shield-halved text-5xl text-brand-neon"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-white">Arsyilla <span class="text-brand-neon">DB</span></h1>
+            <p class="text-slate-500 text-sm mt-2">Cloud Database Authentication</p>
+        </div>
+
+        <div class="flex mb-8 bg-black/40 p-1.5 rounded-2xl">
+            <button id="tab-login" onclick="switchTab('login')" class="flex-1 py-3 rounded-xl font-bold transition bg-brand-neon text-dark-bg">LOGIN</button>
+            <button id="tab-register" onclick="switchTab('register')" class="flex-1 py-3 rounded-xl font-bold transition text-slate-500">REGISTER</button>
+        </div>
+
+        <form id="authForm" class="space-y-6">
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-slate-500 uppercase ml-1">Username</label>
+                <input type="text" id="username" class="w-full bg-black/20 border border-dark-border p-4 rounded-2xl outline-none focus:border-brand-neon transition" required>
+            </div>
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-slate-500 uppercase ml-1">Password</label>
+                <input type="password" id="password" class="w-full bg-black/20 border border-dark-border p-4 rounded-2xl outline-none focus:border-brand-neon transition" required>
+            </div>
+            <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-brand-teal to-brand-neon text-dark-bg font-black py-4 rounded-2xl shadow-lg shadow-brand-neon/20 transition transform active:scale-95 uppercase">
+                Masuk Sekarang
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    let mode = 'login';
+    function switchTab(newMode) {
+        mode = newMode;
+        document.getElementById('tab-login').className = mode === 'login' ? 'flex-1 py-3 rounded-xl font-bold transition bg-brand-neon text-dark-bg' : 'flex-1 py-3 rounded-xl font-bold transition text-slate-500';
+        document.getElementById('tab-register').className = mode === 'register' ? 'flex-1 py-3 rounded-xl font-bold transition bg-brand-neon text-dark-bg' : 'flex-1 py-3 rounded-xl font-bold transition text-slate-500';
+        document.getElementById('submitBtn').innerText = mode === 'login' ? 'Masuk Sekarang' : 'Daftar Akun';
+    }
+
+    document.getElementById('authForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const res = await fetch(mode === 'login' ? '/api/login' : '/api/register', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        if(res.ok) {
+            localStorage.setItem('apiKey', data.apiKey);
+            localStorage.setItem('username', username);
+            window.location.href = '/';
+        } else {
+            alert(data.error);
+        }
+    });
+</script>
